@@ -12,23 +12,10 @@ from telethon import functions, types
 
 from text_generator import generate_text
 
-if os.path.exists('config.ini'):
-    config = configparser.ConfigParser()
-    config.read('config.ini')
-    api_id = config['TelegramApi']['api_id']
-    api_hash = config['TelegramApi']['api_hash']
-else:
-    api_id = int(questionary.password('Api ID:').ask())
-    api_hash = questionary.password('Api hash:').ask()
+ENVIRONMENT_KEYS = ['api_id', 'api_hash']
+environ_params = {key: os.environ[key] for key in self.ENVIRONMENT_KEYS}
 
-    config = configparser.ConfigParser()
-    config['TelegramApi'] = {'api_id': api_id,
-                             'api_hash': api_hash,
-                             }
-    with open('config.ini', 'w') as configfile:
-        config.write(configfile)
-
-client = TelegramClient('session_new', api_id, api_hash)
+client = TelegramClient('session_new', environ_params["api_id"], environ_params["api_hash"])
 client.start()
 
 print('Bot started')
