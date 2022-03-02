@@ -3,8 +3,9 @@ import configparser
 import datetime
 import os
 import random
+import requests
 
-import pandas as pd
+
 import questionary
 from telethon import TelegramClient
 from telethon import errors
@@ -12,20 +13,30 @@ from telethon import functions, types
 
 from text_generator import generate_text
 
-ENVIRONMENT_KEYS = ['api_id', 'api_hash']
-environ_params = {key: os.environ[key] for key in self.ENVIRONMENT_KEYS}
 
-client = TelegramClient('session_new', environ_params["api_id"], environ_params["api_hash"])
+api_id = int(questionary.password('Api ID:').ask())
+api_hash = questionary.password('Api hash:').ask()
+
+
+client = TelegramClient('session_new', api_id, api_hash)
 client.start()
 
 print('Bot started')
 
 
+with open('telegram_db', 'r') as f:
+        channels = f.readlines()
+
+if len(channels) < 150:
+    response = requests.get('https://demo.smiddle.com/telegram_channels_list')
+
+
+
+
 async def main():
     number_of_channels_rep = 150
     number_completed = 0
-    df_main = pd.read_csv('telegram_db.csv')
-    df_main.sort_values(by=['priority'])
+
 
     df_grouped = df_main.groupby(['priority'], as_index=False)['channel'].agg(lambda x: list(x))
     while number_completed < number_of_channels_rep:
