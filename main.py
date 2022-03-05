@@ -32,7 +32,7 @@ with open(os.path.join(root_directory, 'banned'), 'r') as f:
 
 
 async def main():
-    number_of_channels_rep = 150
+    number_of_channels_rep = 125
     number_completed = 0
 
     with open(os.path.join(root_directory, 'banned'), 'a') as f_ban:
@@ -59,6 +59,7 @@ async def main():
                     except errors.UsernameInvalidError:
                         print("Nobody is using this username, or the username is unacceptable")
                         requests.post(url=host, data=telegram_channel)
+                        number_completed += 1
                     except errors.FloodWaitError as e:
                         seconds_left = e.seconds
                         while seconds_left > 0:
@@ -66,7 +67,7 @@ async def main():
                             seconds_left -= 60
                             await asyncio.sleep(60)
 
-                    await asyncio.sleep(10 + 2 * random.random())
+                    await asyncio.sleep(10 + 2 * random.randint(1, 30) + 2 * random.random())
 
 
 with client:
