@@ -32,7 +32,7 @@ with open(os.path.join(root_directory, 'banned'), 'r') as f:
 
 
 async def main():
-    number_of_channels_rep = 125
+    number_of_channels_rep = 100
     number_completed = 0
 
     with open(os.path.join(root_directory, 'banned'), 'a') as f_ban:
@@ -50,7 +50,7 @@ async def main():
                                 reason=types.InputReportReasonSpam(),
                                 message=generate_text())
                             )
-                        print(telegram_channel.strip(), result)
+                        print(number_completed, telegram_channel.strip(), result)
                         number_completed += 1
                     except ValueError:
                         print("Channel not found")
