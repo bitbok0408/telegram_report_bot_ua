@@ -36,8 +36,8 @@ async def main():
     number_completed = 0
 
     with open(os.path.join(root_directory, 'banned'), 'a') as f_ban:
-        while number_completed < number_of_channels_rep:
-            for telegram_channel in channel_list:
+        for telegram_channel in channel_list:
+            if number_completed <= number_of_channels_rep:
                 if "https://" in telegram_channel:
                     telegram_channel = telegram_channel.split('/')[-1]
                 elif '@' in telegram_channel:
@@ -46,20 +46,18 @@ async def main():
                     f_ban.write(f'{telegram_channel} ')
                     try:
                         result = await client(functions.account.ReportPeerRequest(
-                                peer=telegram_channel,
-                                reason=types.InputReportReasonSpam(),
-                                message=generate_text())
-                            )
+                            peer=telegram_channel,
+                            reason=types.InputReportReasonSpam(),
+                            message=generate_text())
+                        )
                         print(number_completed, telegram_channel.strip(), result)
                         number_completed += 1
                     except ValueError:
                         print("Channel not found")
-                        number_completed += 1
                         requests.post(url=host, data=telegram_channel)
                     except errors.UsernameInvalidError:
                         print("Nobody is using this username, or the username is unacceptable")
                         requests.post(url=host, data=telegram_channel)
-                        number_completed += 1
                     except errors.FloodWaitError as e:
                         seconds_left = e.seconds
                         while seconds_left > 0:
@@ -68,6 +66,9 @@ async def main():
                             await asyncio.sleep(60)
 
                     await asyncio.sleep(10 + 2 * random.randint(1, 30) + 2 * random.random())
+
+                else:
+                    break
 
 
 with client:
