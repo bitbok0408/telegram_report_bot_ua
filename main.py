@@ -3,10 +3,10 @@ import datetime
 import random
 import requests
 import os
-import questionary
+import time
 
 
-from telethon import TelegramClient
+from client_factory import ClientFactory
 from telethon import errors
 from telethon import functions, types
 
@@ -14,12 +14,11 @@ from text_generator import generate_text
 
 
 root_directory = os.path.dirname(os.path.abspath(__file__))
-api_id = int(questionary.password('Api ID:').ask())
-api_hash = questionary.password('Api hash:').ask()
-client = TelegramClient('session_new', api_id, api_hash)
-client.start()
 
-host = questionary.path('Host:').ask()
+settings_obj = ClientFactory.create_client(session_name="report")
+client = settings_obj['client']
+host = settings_obj['host']
+
 print('Bot started')
 
 
@@ -67,8 +66,10 @@ async def main():
 
                     await asyncio.sleep(10 + 2 * random.randint(1, 30) + 2 * random.random())
 
-                else:
-                    break
+            else:
+                print("number of channel were exceeded, pls enter CTRL+C")
+                time.sleep(600)
+                break
 
 
 with client:
