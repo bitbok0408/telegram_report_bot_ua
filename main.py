@@ -36,7 +36,7 @@ async def main():
     number_completed = 0
 
     with open(os.path.join(root_directory, 'banned'), 'a') as f_ban:
-        while number_completed < number_of_channels_rep:
+        for i in range(0, number_of_channels_rep):
             telegram_channel = channel_list[number_completed]
             if "https://" in telegram_channel:
                 telegram_channel = telegram_channel.split('/')[-1]
