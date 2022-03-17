@@ -18,7 +18,7 @@ class ClientFactory:
         else:
             api_id = int(questionary.password('Api ID:').ask())
             api_hash = questionary.password('Api hash:').ask()
-            host = questionary.path('host:').ask()
+            host = questionary.path('host').ask()
 
             config = configparser.ConfigParser()
             config['TelegramApi'] = {'api_id': api_id,
